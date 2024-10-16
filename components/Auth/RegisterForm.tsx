@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import FormInput from "@/components/form/FormInput";
 import CustomerButton from "@/components/UI/CustomerButton";
+import {validateEmail, validateFirstname, validateLastname, validatePassword} from "@/components/Helpers/Helpers";
+import {router} from "expo-router";
+import FieldPassword from "@/components/form/FieldPassword";
 
 interface FormErrors {
     firstname?: string;
@@ -16,30 +19,40 @@ const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<FormErrors>({});
+    const [passwordError, setPasswordError] = useState<string | null>(null);
 
     const handleRegister = () => {
         let newErrors: FormErrors = {};
 
-        if (!firstname) {
-            newErrors.firstname = 'Firstname est requis';
-        }
-        if (!lastname) {
-            newErrors.lastname = 'Lastname est requis';
-        }
-        if (!email) {
-            newErrors.email = 'Email est requis';
-        }
-        if (!password) {
-            newErrors.password = 'Mot de passe est requis';
+
+        const firstnameValidation = validateFirstname(firstname);
+        if (!firstnameValidation.isValid) {
+            newErrors.firstname = firstnameValidation.error;
         }
 
+        const lastnameValidation = validateLastname(lastname);
+        if (!lastnameValidation.isValid) {
+            newErrors.lastname = lastnameValidation.error;
+        }
+
+        const emailValidation = validateEmail(email);
+        if (!emailValidation.isValid) {
+            newErrors.email = emailValidation.error;
+        }
+
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.isValid) {
+            newErrors.password = passwordValidation.error;
+        }
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            setPasswordError(newErrors.password || null);
             return;
         }
 
-        // Logique de soumission du formulaire
         console.log('Form submitted', {firstname, lastname, email, password });
+
+        router.push('/onboarding');
     };
 
     return (
@@ -70,13 +83,12 @@ const LoginForm = () => {
                 placeholder="Votre email"
                 error={errors.email}
             />
-            <FormInput
+            <FieldPassword
                 label="Mot de passe"
                 value={password}
                 onChange={setPassword}
-                placeholder="Votre Password"
-                error={errors.password}
-                secureTextEntry={true}
+                placeholder="Votre mot de passe"
+                errors={passwordError}
             />
             <CustomerButton style={styles.button} title="S'inscrire" onPress={handleRegister} />
         </View>

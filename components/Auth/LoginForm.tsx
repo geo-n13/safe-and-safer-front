@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import FormInput from "@/components/form/FormInput";
 import CustomerButton from "@/components/UI/CustomerButton";
-import {router} from "expo-router";
+import { router } from "expo-router";
 import FieldPassword from "@/components/form/FieldPassword";
+import {validatePassword} from "@/components/Helpers/Helpers";
 
 interface FormErrors {
     email?: string;
@@ -14,26 +15,31 @@ const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<FormErrors>({});
+    const [passwordError, setPasswordError] = useState<string | null>(null);
+
+
     const handleRegister = () => {
         let newErrors: FormErrors = {};
-
         if (!email) {
             newErrors.email = 'Email est requis';
         } else if (!/\S+@\S+\.\S+/.test(email)) {
             newErrors.email = 'Email invalide';
         }
+
+        const passwordValidation = validatePassword(password);
         if (!password) {
             newErrors.password = 'Mot de passe est requis';
-        } else if (password.length < 6) {
-            newErrors.password = 'Le mot de passe doit contenir au moins 6 caractères';
+        } else if (!passwordValidation.isValid) {
+            newErrors.password = passwordValidation.error;
         }
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            setPasswordError(newErrors.password || null);
             return;
         }
-        console.log('Form submitted', { email, password });
-        router.push('/OnboardingContent' as any);
+
+        router.push('/onboarding');
     };
 
     return (
@@ -54,12 +60,14 @@ const LoginForm = () => {
                 label="Mot de passe"
                 value={password}
                 onChange={setPassword}
-                placeholder="Votre Password"
-                errors={errors.password}
+                placeholder="Votre mot de passe"
+                errors={passwordError}
             />
-
-            <CustomerButton style={styles.button} title="S'inscrire"
-                            onPress={handleRegister}></CustomerButton>
+            <CustomerButton
+                style={styles.button}
+                title="S'inscrire"
+                onPress={handleRegister}
+            />
         </View>
     );
 };
@@ -72,17 +80,21 @@ const styles = StyleSheet.create({
         display: "flex",
         margin: "auto"
     },
-    button:{
+    button: {
         backgroundColor: '#AE3C3C',
         justifyContent: "center",
         margin: "auto"
     },
-    logo:{
+    logo: {
         width: 120,
         height: 120,
         margin: "auto"
-    }
-
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 12,
+        marginTop: 5,
+    },
 });
 
 export default LoginForm;

@@ -55,39 +55,6 @@ const FieldPassword: React.FC<FieldPasswordProps> = ({
     );
 };
 
-// const validatePassword = (password: string) => {
-//     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
-//
-//     if (!passwordRegex.test(password)) {
-//         return 'Le mot de passe doit contenir au moins 12 caractères, avec au moins une majuscule, une minuscule, un chiffre et un caractère spécial.';
-//     }
-//
-//     return null;
-// };
-
-// const PasswordForm = () => {
-//     const [password, setPassword] = useState('');
-//     const [passwordError, setPasswordError] = useState<string | null>(null);
-//
-//     const handlePasswordChange = (newPassword: string) => {
-//         setPassword(newPassword);
-//         const error = validatePassword(newPassword);
-//         setPasswordError(error);
-//     };
-//
-//     return (
-//         <View style={styles.container}>
-//             <FieldPassword
-//                 label="Mot de passe"
-//                 value={password}
-//                 onChange={handlePasswordChange}
-//                 errors={passwordError}
-//                 errorPrefix=""
-//                 placeholder="Entrez votre mot de passe"
-//             />
-//         </View>
-//     );
-// };
 
 const styles = StyleSheet.create({
     container: {
@@ -105,21 +72,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#AE3C3C',
     },
     input: {
-        borderWidth: 1,
-        borderColor: '#AE3C3C',
+        flex: 1,
         padding: 10,
-        borderRadius: 20,
         fontSize: 16,
-        backgroundColor: '#AE3C3C',
-    },
-    inputFocused: {
-        borderColor: 'white'
+        borderWidth: 0,
+        outlineStyle: 'none',
+        outline: 'none',
+        underlineColorAndroid: 'transparent',
+        backgroundColor: 'transparent',
     },
     inputError: {
         borderColor: 'red',
     },
-
-
     eyeIcon: {
         padding: 10,
     },
